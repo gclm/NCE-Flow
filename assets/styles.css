@@ -10,6 +10,7 @@
   --accent: #0a84ff; /* iOS Blue */
   --accent-2: #7c4dff; /* purple */
   --radius: 14px;
+  --control-h: 34px; /* unified control height */
 }
 
 @media (prefers-color-scheme: light) {
@@ -54,8 +55,8 @@ body::before{
 .hero .subtitle{margin-top:6px;margin-bottom:10px;font-size:13px;color:var(--muted);letter-spacing:0.02em}
 /* badges removed per design feedback */
 
-/* Back button inline with player */
-.back-inline{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow);color:inherit;flex:0 0 auto;}
+/* Back/Speed buttons inline with player — unify control height with audio */
+.back-inline{display:inline-flex;align-items:center;gap:6px;height:var(--control-h);padding:0 12px;border-radius:999px;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow);color:inherit;flex:0 0 auto;}
 .back-inline svg{width:14px;height:14px;fill:currentColor}
 
 /* Segmented control */
@@ -111,8 +112,8 @@ body::before{
 .lang-cn .en{display:none}
 
 /* Audio */
-.player{display:flex; align-items:center; gap:8px; margin:6px auto 10px; padding:0; background:transparent; border:none; box-shadow:none;}
-.player audio{display:block; flex:1; width:100%; max-width:780px; height:34px; accent-color: var(--accent); background: transparent;}
+.player{display:flex; align-items:center; gap:8px; margin:6px auto 10px; padding:0; background:transparent; border:none; box-shadow:none; min-height:var(--control-h);}
+.player audio{display:block; flex:1; width:100%; max-width:780px; height:var(--control-h); accent-color: var(--accent); background: transparent;}
 
 /* Lesson bottom navigation */
 .lesson-nav{display:flex; justify-content:space-between; gap:10px; padding:6px 0 16px; max-width:780px; margin:0 auto}
