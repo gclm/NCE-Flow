@@ -26,6 +26,15 @@ static/data.json # 书目与课程元数据
 NCE1..NCE4/      # 音频与 LRC 资源（文件名与 data.json 一致）
 ```
 
+## ⬇️ 获取完整代码
+
+请通过下述任一方式获取项目，以确保音频（mp3）完整：
+
+- 推荐：`git clone https://github.com/luzhenhua/NCE-Flow.git`
+- 或从 Releases 页面下载打包好的压缩包（含完整音频）：https://github.com/luzhenhua/NCE-Flow/releases
+
+注意：不要使用 GitHub 页面右上角的 “Code → Download ZIP”。该 ZIP 可能不包含完整的 mp3（或仅为指针文件），会导致页面无声音。
+
 ## 🚀 本地运行
 
 建议使用本地静态服务器（避免浏览器对 file:// 的 fetch 限制）：
@@ -36,6 +45,12 @@ python3 -m http.server 8080
 ```
 
 或直接将仓库部署到 GitHub Pages（默认入口为根目录的 `index.html`）。
+
+## 🌐 演示与部署
+
+- 演示站托管：部署在 腾讯云 EdgeOne（静态托管）。
+- 项目为纯静态站点，理论上支持任意静态平台：Vercel、Cloudflare Pages、GitHub Pages 等。
+- 部署要点：确保静态资源完整上传（尤其是 `NCE1..NCE4/` 下的 mp3 与 lrc），入口指向 `index.html`。
 
 ## 🎧 LRC 规范（本项目兼容两种）
 
@@ -65,6 +80,10 @@ python3 -m http.server 8080
 - 课文页支持 EN/EN+CN/CN 三态语言视图；
 - 句子级点读 + 连续播放；
 - 视觉与动效统一（浅/深色自适应）。
+
+- 感谢贡献：
+  - https://github.com/reaishijie 提交的 PR（播放速度控制与持久化）：
+    https://github.com/luzhenhua/NCE-Flow/pull/3
 
 ## 📄 协议
 
