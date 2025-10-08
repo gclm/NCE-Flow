@@ -71,6 +71,8 @@
     const nextLessonLink = qs('#nextLesson');
     // 新加控制音频播放速度
     const speedButton = qs('#speed')
+    // 连读/点读开关
+    const modeToggle = qs('#modeToggle');
     const rates = [1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 0.75, 1.0];
     const DEFAULT_RATE = 1.0;
     
@@ -109,6 +111,8 @@
         } else {
             console.warn(`当前速度 ${actualRate.toFixed(2)}x 不在预设列表中，内部索引未更新。`);
         }
+        // 速度改变后需要重置自动前进/暂停的计时
+        scheduleAdvance();
     });
 
     let items = [];
@@ -117,6 +121,38 @@
     let segmentTimer = 0; // timeout id for auto-advance
     let prevLessonHref = '';
     let nextLessonHref = '';
+
+    // 阅读模式：continuous（连读）或 single（点读）
+    const MODE_KEY = 'readMode';
+    let readMode = 'continuous';
+    try {
+      const savedMode = localStorage.getItem(MODE_KEY);
+      if (savedMode === 'continuous' || savedMode === 'single') {
+        readMode = savedMode;
+      }
+    } catch (_) { }
+
+    function reflectReadMode() {
+      if (!modeToggle) return;
+      const isContinuous = readMode === 'continuous';
+      modeToggle.textContent = isContinuous ? '连读' : '点读';
+      modeToggle.setAttribute('aria-pressed', isContinuous ? 'true' : 'false');
+      modeToggle.dataset.mode = readMode;
+    }
+
+    function setReadMode(mode) {
+      readMode = mode === 'single' ? 'single' : 'continuous';
+      try { localStorage.setItem(MODE_KEY, readMode); } catch (_) { }
+      reflectReadMode();
+      scheduleAdvance();
+    }
+
+    if (modeToggle) {
+      reflectReadMode();
+      modeToggle.addEventListener('click', () => {
+        setReadMode(readMode === 'continuous' ? 'single' : 'continuous');
+      });
+    }
 
     audio.src = mp3;
     // Back navigation: prefer history, fallback to index with current book
@@ -153,18 +189,30 @@
 
     function scheduleAdvance() {
       clearAdvance();
+      if (audio.paused) return; // 不在播放时不安排下一步
       if (segmentEnd && idx >= 0) {
-        const ms = Math.max(0, (segmentEnd - audio.currentTime) * 1000);
+        const rate = Math.max(0.0001, audio.playbackRate || 1);
+        const ms = Math.max(0, (segmentEnd - audio.currentTime) * 1000 / rate);
         segmentTimer = setTimeout(() => {
-          if (idx + 1 < items.length) {
-            playSegment(idx + 1);
+          if (readMode === 'continuous') {
+            if (idx + 1 < items.length) {
+              playSegment(idx + 1);
+            } else {
+              // 最后一条：停止
+              audio.pause();
+            }
           } else {
-            // last sentence of lesson: stop here
+            // 点读：到段末停止
             audio.pause();
           }
         }, ms);
       }
     }
+
+    // 进度跳转时，重置自动前进/暂停的计时
+    audio.addEventListener('seeked', () => {
+      scheduleAdvance();
+    });
 
     function playSegment(i) {
       if (i < 0 || i >= items.length) return;
