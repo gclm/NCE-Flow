@@ -72,7 +72,7 @@ python3 -m http.server 8080
 
 ## 🙏 致谢
 
-- 原项目与灵感来源：iChochy/NCE（https://github.com/iChochy/NCE）
+- 原项目与灵感来源：[iChochy/NCE](https://github.com/iChochy/NCE)
 
   在此对原作者和社区表达感谢。
 
